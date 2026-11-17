@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThesisTrack — Personal Thesis Progress Monitor</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Lucide icons via CDN (MIT licensed) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎓</span>
+        <span class="logo-text">ThesisTrack</span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main Navigation">
+      <ul>
+        <li>
+          <button class="nav-item active" data-page="dashboard">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-page="progress">
+            <i data-lucide="book-open"></i>
+            <span>Thesis Progress</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-page="tasks">
+            <i data-lucide="check-square"></i>
+            <span>My Tasks</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-page="supervision">
+            <i data-lucide="users"></i>
+            <span>Supervision</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-page="revisions">
+            <i data-lucide="edit-3"></i>
+            <span>Revisions</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-page="milestones">
+            <i data-lucide="flag"></i>
+            <span>Milestones</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-page="calendar">
+            <i data-lucide="calendar-days"></i>
+            <span>Calendar</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="sidebarAvatar">S</div>
+        <div class="user-details">
+          <span class="user-name" id="sidebarUserName">Student</span>
+          <span class="user-role">Thesis Candidate</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════════════════════════════ -->
+  <main class="main-content" id="mainContent">
+
+    <!-- TOP NAV -->
+    <header class="topnav">
+      <div class="topnav-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="page-title-wrap">
+          <h1 class="page-title" id="pageTitle">Dashboard</h1>
+          <span class="page-date" id="pageDate"></span>
+        </div>
+      </div>
+      <div class="topnav-right">
+        <div class="topnav-avatar" id="topnavAvatar">S</div>
+        <span class="topnav-name" id="topnavName">Student</span>
+        <button class="btn btn-outline btn-sm" id="btnSettings" title="Settings">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ─── DASHBOARD PAGE ─── -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-inner">
+
+        <!-- Welcome banner -->
+        <div class="welcome-banner" id="welcomeBanner">
+          <div class="welcome-text">
+            <p class="welcome-greeting" id="welcomeGreeting">Good morning! 🌸</p>
+            <p class="welcome-msg" id="welcomeMsg">Keep going — every word written is progress!</p>
+          </div>
+          <div class="graduation-countdown" id="graduationCountdown">
+            <span class="countdown-num" id="countdownDays">—</span>
+            <span class="countdown-label">days to graduation</span>
+          </div>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon purple"><i data-lucide="percent"></i></div>
+            <div class="stat-body">
+              <span class="stat-value" id="statOverall">0%</span>
+              <span class="stat-label">Overall Progress</span>
+            </div>
+            <div class="stat-bar"><div class="stat-bar-fill" id="statOverallBar" style="width:0%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon peach"><i data-lucide="book-open"></i></div>
+            <div class="stat-body">
+              <span class="stat-value" id="statActiveChapter">—</span>
+              <span class="stat-label">Active Chapter</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon lavender"><i data-lucide="check-square"></i></div>
+            <div class="stat-body">
+              <span class="stat-value" id="statTasksDone">0/0</span>
+              <span class="stat-label">Tasks Completed</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon mint"><i data-lucide="alert-circle"></i></div>
+            <div class="stat-body">
+              <span class="stat-value" id="statPending">0</span>
+              <span class="stat-label">Pending Tasks</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-column lower area -->
+        <div class="dash-lower">
+          <!-- Upcoming deadlines -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title"><i data-lucide="clock"></i> Upcoming Deadlines</h2>
+            </div>
+            <div class="card-body" id="dashDeadlines">
+              <p class="empty-state">No upcoming deadlines. 🎉</p>
+            </div>
+          </div>
+
+          <!-- Next supervision -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title"><i data-lucide="calendar"></i> Next Supervision</h2>
+            </div>
+            <div class="card-body" id="dashSupervision">
+              <p class="empty-state">No upcoming supervision sessions.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thesis Buddy -->
+        <div class="card buddy-card">
+          <div class="card-header">
+            <h2 class="card-title">🤖 Thesis Buddy</h2>
+            <span class="badge badge-purple">Rule-based assistant</span>
+          </div>
+          <div class="card-body">
+            <ul class="buddy-tips" id="buddyTips">
+              <li>Hi! I'm your Thesis Buddy. I'll give you tips as you work. 🌟</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── THESIS PROGRESS PAGE ─── -->
+    <section class="page" id="page-progress">
+      <div class="page-inner">
+        <div class="card overall-progress-card">
+          <div class="card-header">
+            <h2 class="card-title">Overall Thesis Progress</h2>
+            <span class="stat-value" id="overallPct">0%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="overallProgressBar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="chapters-grid" id="chaptersGrid">
+          <!-- Chapter cards rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TASKS PAGE ─── -->
+    <section class="page" id="page-tasks">
+      <div class="page-inner">
+        <div class="page-toolbar">
+          <div class="filter-row">
+            <select class="filter-select" id="filterTaskStatus">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select class="filter-select" id="filterTaskPriority">
+              <option value="">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="btnAddTask">
+            <i data-lucide="plus"></i> Add Task
+          </button>
+        </div>
+        <div class="tasks-list" id="tasksList">
+          <!-- Task cards rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SUPERVISION PAGE ─── -->
+    <section class="page" id="page-supervision">
+      <div class="page-inner">
+        <div class="page-toolbar">
+          <span></span>
+          <button class="btn btn-primary" id="btnAddSupervision">
+            <i data-lucide="plus"></i> Add Session
+          </button>
+        </div>
+        <div class="supervision-list" id="supervisionList">
+          <!-- Sessions rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── REVISIONS PAGE ─── -->
+    <section class="page" id="page-revisions">
+      <div class="page-inner">
+        <div class="page-toolbar">
+          <div class="filter-row">
+            <select class="filter-select" id="filterRevStatus">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="btnAddRevision">
+            <i data-lucide="plus"></i> Add Revision
+          </button>
+        </div>
+        <div class="revisions-list" id="revisionsList">
+          <!-- Revision cards rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MILESTONES PAGE ─── -->
+    <section class="page" id="page-milestones">
+      <div class="page-inner">
+        <!-- Badges row -->
+        <div class="badges-row" id="badgesRow">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="milestones-list" id="milestonesList">
+          <!-- Milestone cards rendered by JS -->
+        </div>
+
+        <!-- Motivation section -->
+        <div class="card motivation-card">
+          <div class="card-header">
+            <h2 class="card-title">💜 Daily Motivation</h2>
+          </div>
+          <div class="card-body">
+            <blockquote class="motivation-quote" id="motivationQuote"></blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CALENDAR PAGE ─── -->
+    <section class="page" id="page-calendar">
+      <div class="page-inner">
+
+        <!-- Month navigation header -->
+        <div class="cal-header">
+          <button class="btn btn-outline btn-sm" id="calPrevBtn" aria-label="Previous month">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <h2 class="cal-month-label" id="calMonthLabel">November 2026</h2>
+          <button class="btn btn-outline btn-sm" id="calNextBtn" aria-label="Next month">
+            <i data-lucide="chevron-right"></i>
+          </button>
+          <button class="btn btn-outline btn-sm" id="calTodayBtn" style="margin-left:auto">Today</button>
+        </div>
+
+        <!-- Legend -->
+        <div class="cal-legend">
+          <span class="cal-legend-item"><span class="cal-dot task"></span>Task deadline</span>
+          <span class="cal-legend-item"><span class="cal-dot revision"></span>Revision</span>
+          <span class="cal-legend-item"><span class="cal-dot supervision"></span>Supervision</span>
+          <span class="cal-legend-item"><span class="cal-dot milestone"></span>Milestone</span>
+        </div>
+
+        <!-- Calendar grid -->
+        <div class="card cal-card">
+          <!-- Day-of-week headers -->
+          <div class="cal-dow-row">
+            <span>Sun</span><span>Mon</span><span>Tue</span>
+            <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <!-- Day cells injected by JS -->
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <!-- Selected-date detail panel -->
+        <div class="card cal-detail-card" id="calDetailCard" style="display:none">
+          <div class="card-header">
+            <h2 class="card-title" id="calDetailTitle">
+              <i data-lucide="calendar"></i> Events on —
+            </h2>
+            <button class="modal-close" id="calDetailClose" aria-label="Close detail panel">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <ul class="cal-event-list" id="calEventList"></ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODALS
+  ════════════════════════════════════════════════════ -->
+
+  <!-- Generic Modal Shell -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Modal</h2>
+        <button class="modal-close" id="modalClose" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog -->
+  <div class="modal-backdrop" id="confirmBackdrop" aria-hidden="true">
+    <div class="modal modal-sm" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" id="confirmClose" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMsg">Are you sure you want to delete this item?</p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="confirmCancel">Cancel</button>
+          <button class="btn btn-danger" id="confirmOk">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop" id="settingsBackdrop" aria-hidden="true">
+    <div class="modal modal-sm" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title">⚙️ Settings</h2>
+        <button class="modal-close" id="settingsClose" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="settingName">Your Name</label>
+          <input type="text" class="form-input" id="settingName" placeholder="e.g. Aira Nabilah" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="settingGradDate">Target Graduation Date</label>
+          <input type="date" class="form-input" id="settingGradDate" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="settingThesisTitle">Thesis Title</label>
+          <input type="text" class="form-input" id="settingThesisTitle" placeholder="e.g. The Impact of AI on Education" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="settingsCancel">Cancel</button>
+          <button class="btn btn-primary" id="settingsSave">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
